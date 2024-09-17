@@ -7,122 +7,60 @@
 
 const createElement = document.getElementById("create-element"); 
 const accordionSection = document.getElementById("accordion_section");
-let accordionStatus = false;
-let baseAccordion;
-let accordionArrow;
+
+let accordionArray = [];
+let accordionStatus = {};
 
 createElement.addEventListener("click", function() {
-    console.log("pressed")
-    storedAccordion(true); 
+    createAccordion();
+    updateAccordion();
 });
-
-
-function expandAccordion(accordionElement) {
-    console.log("pressed213");
-    if (!accordionElement) {
-        console.error('Element not initialized'); 
-        return;
-    }
-
-    if (accordionElement.classList.contains("accordion")) {
-        console.log("test")
-        let accordionBody = document.createElement("div");
-        accordionBody.classList.add("accordion-body");
-        accordionBody.innerHTML = `
-            <div class="accordion-body_divider"><div>
-            <div class="accordion-item"></div>
-        `;
-        accordionElement.appendChild(accordionBody);
-
-        let accordionItem = document.createElement("div");
-        accordionItem.classList.add("accordion-item");
-        accordionItem.innerHTML = `
-            <div class="unchecked"></div>
-            <p class="accordion-item_text">xxxx</p>
-        `;
-        accordionBody.appendChild(accordionItem);
-        accordionElement.classList.replace("accordion", "accordion_active");
-    } else {
-        console.log("Invalid accordion action due to already being active!!!");
-    }
-
-    const accordionArrow = baseAccordion.querySelector(".accordion-arrow");
-    accordionArrow.addEventListener("click", function () {
-        console.log("pressed12");
-
-        if (baseAccordion.classList.contains("accordion")) {
-          expandAccordion(baseAccordion); 
-          accordionArrow.classList.replace("accordion-arrow", "accordion-arrow_rotate");
-        } else if (baseAccordion.classList.contains("accordion_active")) {
-          collapseAccordion(baseAccordion); 
-          accordionArrow.classList.replace("accordion-arrow_rotate", "accordion-arrow");
-        }
-    });
-};
-
-function collapseAccordion(accordionElement) {
-    if (accordionElement.classList.contains("accordion_active")) {
-        let accordionBody = accordionElement.querySelector(".accordion-body");
-        if (accordionBody) {
-            accordionElement.removeChild(accordionBody);
-        }
-        accordionElement.classList.replace("accordion_active", "accordion");
-    } else {
-        console.log("accordion has been closed already")
-    }
-
-};
 
 function createAccordion() {
-    accordionStatus = true;
-    let baseAccordion = document.createElement("div");
-    baseAccordion.classList.add("accordion");
-    baseAccordion.innerHTML = `
+    let accordion = document.createElement("div");
+    accordion.classList.add("accordion");
+    accordion.id = "accordion-item";
+
+    let accordionId = `accordion-chevron-${Date.now()}`;
+
+    accordion.innerHTML = `
         <div class="accordion-title_group">
             <p class="accordion_title">xxxxx</p>
-            <img src="icons/down-icon.png" id="accordion-chevron" class="accordion-arrow">
+            <img src="icons/down-icon.png" id="${accordionId}" class="accordion-arrow">
         </div>
     `;
-    accordionSection.appendChild(baseAccordion);
-
-    const accordionArrow = baseAccordion.querySelector(".accordion-arrow");
-    accordionArrow.addEventListener("click", function(){
-        console.log('pressed12')
-        if (baseAccordion.classList.contains("accordion")) {
-            expandAccordion(baseAccordion)
-            accordionArrow.classList.replace("accordion-arrow", "accordion-arrow_rotate");
-        }
-    });
-
-    return baseAccordion
+    accordionSection.appendChild(accordion);
+    accordionArray.push(accordion);
+    accordionStatus[accordionId] = false;
+    console.log(accordionArray);
+    return accordion
 }
 
-function storedAccordion(status) {
-    if (status === true) {
-        baseAccordion = createAccordion();
-    } else {
-        console.log("accordion not active")
+function updateAccordion() {
+    console.log(accordionStatus)
+    for (let i = 0; i < accordionArray.length; i++) {
+        const accordion = accordionArray[i];
+        const accordionArrow = accordion.querySelector(".accordion-arrow");
+
+        accordionArrow.addEventListener("click", function(){
+            console.log("arrow selected")
+            let id = accordionArrow.id;
+            if (accordionStatus[id]) {
+                accordionArrow.classList.add("accordion-arrow");
+                accordionArrow.classList.remove("accordion-arrow_rotate");
+                accordionStatus[id] = false;
+            } else {
+                accordionArrow.classList.add("accordion-arrow_rotate");
+                accordionArrow.classList.remove("accordion-arrow");
+                accordionStatus[id] = true;  
+            }
+            console.log(accordionStatus)
+        });
     }
-}
+};
 
-storedAccordion(accordionStatus)
+updateAccordion()
 
-
-accordionArrow.addEventListener("click", function(){
-    console.log('pressed12')
-    if (baseAccordion.classList.contains("accordion")) {
-        expandAccordion(baseAccordion)
-        accordionArrow.classList.replace("accordion-arrow", "accordion-arrow_rotate");
-    } else if (baseAccordion.classList.contains("accordion_active")) {
-        expandAccordion(baseAccordion)
-        accordionArrow.classList.replace("accordion-arrow_rotate", "accordion-arrow");
-    }
-});
-
-
-function removeAccordion(element) {
-    element.remove()
-}
 
   
 
