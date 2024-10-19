@@ -251,4 +251,7 @@ body {
     font-style: normal;
     font-weight: 400;
     line-height: 20px; /* 125% */
+    background-color: transparent;
+    border: transparent;
+    outline: none;
 }

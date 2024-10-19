@@ -6,7 +6,6 @@ let accordionStatus = {};
 
 createElement.addEventListener("click", function() {
     createAccordion();
-    console.log(accordionArray);
 });
 
 function createAccordion() {
@@ -71,13 +70,49 @@ function toggleAccordion(accordionId) {
         accordionItem.id = "accordion-item";
         accordionItem.innerHTML = `
             <div class="unchecked"></div>
-            <p class="accordion-item_text">Note #1</p>
+            <input class="accordion-item_text" placeholder="Type new note">
         `;
         
         accordionBody.appendChild(accordionItem);
         
         accordion.classList.remove("accordion"); 
         accordion.classList.add("accordion_active");
+
+        const inputElement = accordionItem.querySelector('.accordion-item_text');
+
+        accordionItem.addEventListener("keypress", function(event){
+            if (event.key === "Enter") {
+                console.log("enter pressed")
+                newInput()
+            }
+        })
+
+        accordionItem.addEventListener("keydown", function(event) {
+            console.log("return pressed")
+            if (event.key === "Backspace" && inputElement.value === "") {
+                console.log("return pressed")
+                removeInput(accordionItem)
+            }
+        })
     }
+}
+
+function newInput() {
+    const accordionBody = document.querySelector("#accordion-container")
+    console.log(accordionBody)
+    const accordionItem = document.createElement("div");
+    accordionItem.classList.add("accordion-item");
+    accordionItem.id = "accordion-item";
+    accordionItem.innerHTML = `
+        <div class="unchecked"></div>
+        <input class="accordion-item_text" placeholder="Type new note">
+    `;
+    
+    accordionBody.appendChild(accordionItem);
+
+}
+
+function removeInput(accordionId) {
+    accordionId.remove();
 }
 
